@@ -8,29 +8,39 @@
     <!-- Fonts: Cormorant Garamond (Premium Serif), DM Sans (Clean Sans), Great Vibes (Signature) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=Great+Vibes&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Sans:ital,wght@0,200;0,300;0,400;1,300&family=Great+Vibes&display=swap" rel="stylesheet">
     
     <!-- GSAP for Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <style>
-        /* --- VARIABLES & RESET --- */
+        /* --- PSYCHOLOGICAL ROMANTIC PALETTE --- */
         :root {
-            /* 1. Blush Rose (#F4C2C2) - Buttons
-               2. Ivory Whisper (#FFF6EE) - Background
-               3. Deep Wine (#7A2E3A) - Headings, Highlights
-               4. Warm Mocha (#4A3B36) - Body text
-               5. Soft Gold Dust (#D8B56A) - Underlines, icons
-            */
-            --bg-color: #FFF6EE;      /* Ivory Whisper */
-            --white: #FFFFFF;         
-            --gold: #D8B56A;          /* Soft Gold Dust */
-            --text-heading: #7A2E3A;  /* Deep Wine */
-            --text-body: #4A3B36;     /* Warm Mocha */
-            --btn-bg: #F4C2C2;        /* Blush Rose */
-            --btn-text: #7A2E3A;      /* Deep Wine */
-            --paper-color: #fffbf7;   
-            
+            /* Background Base */
+            --bg-deep: #0B0304;       
+            --bg-wine: #120506;       
+            --bg-warm: #1A080A;       
+
+            /* Primary Romantic Surface */
+            --surface-velvet: #2B0D12;
+            --surface-rosewood: #3A1218;
+            --surface-burgundy: #4A1A21;
+
+            /* Accent Emotional Glow */
+            --glow-affection: #FF8FA3; 
+            --glow-skin: #FFC1B6;      
+            --glow-touch: #F5D0C5;     
+
+            /* Readable Text */
+            --text-main: #FFEAE6;
+            --text-secondary: #D7A6A0;
+            --text-inactive: #9A6A67;
+
+            /* Luxury Metallic */
+            --rose-gold: #E6B7A8;
+            --soft-copper: #C78F7E;
+
+            /* Typography */
             --font-heading: 'Cormorant Garamond', serif;
             --font-body: 'DM Sans', sans-serif;
             --font-signature: 'Great Vibes', cursive;
@@ -40,14 +50,12 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; /* Remove blue tap box on mobile */
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-color);
-            /* Radial gradient from Ivory to Blush Rose */
-            background: radial-gradient(circle at center, #FFF6EE 0%, #F4C2C2 100%);
-            color: var(--text-body);
+            background-color: var(--bg-deep);
+            color: var(--text-main);
             font-family: var(--font-body);
             overflow: hidden; 
             height: 100vh;
@@ -55,31 +63,88 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            letter-spacing: 0.02em;
         }
 
-        /* --- BACKGROUND PARTICLES --- */
+        /* --- ATMOSPHERIC BACKGROUND LAYERS --- */
+        #atmosphere-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: radial-gradient(circle at center, var(--bg-warm) 0%, var(--bg-deep) 100%);
+        }
+
+        .film-grain {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .smoky-cloud {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.08;
+            background: var(--surface-burgundy);
+            z-index: 0;
+        }
+
+        #glow-bloom {
+            position: absolute;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, var(--glow-skin) 0%, transparent 70%);
+            opacity: 0;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        #cursor-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 193, 182, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 3;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.5s ease;
+        }
+
         #canvas-bg {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: 4;
             pointer-events: none;
         }
 
         /* --- LAYOUT CONTAINER --- */
         .container {
             width: 100%;
-            max-width: 650px; /* Optimal width for reading */
+            max-width: 700px;
             height: 100%;
             position: relative;
-            padding: 2rem;
+            padding: 1.5rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
+            z-index: 10;
         }
 
         /* --- SECTIONS --- */
@@ -93,261 +158,212 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 1.5rem;
+            padding: 2rem 1rem;
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.5s ease;
         }
 
         section.active {
             opacity: 1;
             visibility: visible;
             pointer-events: all;
-            z-index: 10;
         }
 
-        /* --- TYPOGRAPHY --- */
+        /* --- OPTIMIZED TYPOGRAPHY --- */
         h1, h2, h3 {
             font-family: var(--font-heading);
-            color: var(--text-heading);
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
+            color: var(--text-main);
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            font-weight: 400;
         }
 
-        h1 { font-size: 3.5rem; font-weight: 700; letter-spacing: -1px; }
-        h2 { font-size: 2.2rem; font-weight: 600; }
-        h3 { font-size: 1.5rem; font-weight: 500; font-style: italic; }
+        h1 { 
+            font-size: clamp(2rem, 10vw, 3.2rem); 
+            letter-spacing: -0.02em; 
+        }
+        h2 { 
+            font-size: clamp(1.5rem, 7vw, 2.2rem); 
+        }
+        h3 { 
+            font-size: clamp(1.1rem, 5vw, 1.4rem); 
+            font-style: italic; 
+            color: var(--text-secondary); 
+        }
 
         p {
-            font-size: 1.1rem;
+            font-size: clamp(0.9rem, 2.5vw, 1.05rem);
             line-height: 1.6;
-            color: var(--text-body);
-            margin-bottom: 2rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
             max-width: 90%;
+            font-weight: 300;
         }
         
-        .highlight { color: var(--gold); font-style: italic; }
+        .highlight { color: var(--rose-gold); font-style: italic; }
 
-        /* --- BUTTONS --- */
+        /* --- OPTIMIZED BUTTONS --- */
         .btn {
-            background-color: var(--btn-bg);
-            color: var(--btn-text);
+            background-color: var(--surface-rosewood);
+            color: var(--text-main);
             font-family: var(--font-body);
-            font-weight: 600;
+            font-weight: 400;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.85rem;
-            padding: 14px 35px;
-            border: none;
+            letter-spacing: 0.15em;
+            font-size: clamp(0.65rem, 2vw, 0.75rem);
+            padding: clamp(12px, 3vh, 16px) clamp(30px, 8vw, 45px);
+            border: 1px solid rgba(230, 183, 168, 0.2);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            border-radius: 2px;
             overflow: hidden;
-            z-index: 1;
-            margin-top: 10px;
-            border-radius: 4px; /* Slight rounding for the solid button look */
-            box-shadow: 0 4px 15px rgba(244, 194, 194, 0.4);
+            flex-shrink: 0;
         }
 
         .btn:hover { 
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(244, 194, 194, 0.6);
-            filter: brightness(0.95); /* Slight dim on hover */
+            background-color: var(--surface-burgundy);
+            border-color: var(--rose-gold);
+            color: var(--glow-skin);
+            box-shadow: 0 0 20px rgba(255, 143, 163, 0.1);
+            transform: translateY(-1px);
         }
         
-        .btn:active { transform: scale(0.95); }
-        
-        /* Specific small buttons for mood selection */
         .btn-mood {
-            padding: 10px 20px;
-            font-size: 0.75rem;
-            margin: 5px;
-            background-color: var(--white);
-            border: 1px solid var(--btn-bg);
-            box-shadow: none;
-        }
-        .btn-mood:hover {
-            background-color: var(--btn-bg);
+            padding: 8px 18px;
+            font-size: 0.65rem;
+            margin: 4px;
+            background-color: transparent;
+            border: 1px solid var(--text-inactive);
+            color: var(--text-secondary);
         }
 
         /* --- INPUTS --- */
         input[type="text"] {
             background: transparent;
             border: none;
-            border-bottom: 1px solid var(--gold);
+            border-bottom: 1px solid var(--text-inactive);
             padding: 10px;
             font-family: var(--font-heading);
-            font-size: 1.3rem;
+            font-size: clamp(1rem, 5vw, 1.25rem);
             text-align: center;
             width: 80%;
-            color: var(--text-heading);
+            max-width: 300px;
+            color: var(--text-main);
             outline: none;
             margin-bottom: 2rem;
-            border-radius: 0; 
+            transition: border-color 0.4s;
         }
         
-        /* --- CARDS & GRIDS --- */
+        /* --- OPTIMIZED GRID --- */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: clamp(8px, 2vw, 15px);
             width: 100%;
-            margin-bottom: 20px;
+            max-width: 500px;
+            margin-bottom: 1.5rem;
         }
         
         .grid-item {
-            background: var(--white);
-            height: 90px;
+            background: var(--surface-velvet);
+            height: clamp(65px, 12vh, 95px);
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             padding: 8px;
-            border: 1px solid rgba(216, 181, 106, 0.3); 
+            border: 1px solid rgba(230, 183, 168, 0.1); 
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            font-size: 0.85rem;
-            position: relative;
-            overflow: hidden;
-            border-radius: 6px;
+            font-size: clamp(0.65rem, 1.8vw, 0.8rem);
+            border-radius: 3px;
         }
 
-        .grid-item.locked { background: rgba(255, 255, 255, 0.6); color: var(--gold); font-size: 1.4rem; }
-        .grid-item.unlocked { background: var(--white); color: var(--text-body); border-color: var(--gold); box-shadow: 0 4px 15px rgba(216, 181, 106, 0.2); }
-        .hidden-content { display: none; font-size: 0.8rem; line-height: 1.3; color: var(--text-body); }
+        .grid-item.unlocked { 
+            background: var(--surface-rosewood); 
+            color: var(--text-main); 
+            border-color: rgba(230, 183, 168, 0.3);
+        }
 
         /* --- SPECIFIC PAGE STYLES --- */
-        
-        /* Page 6: Countdown - Deep Wine Background for contrast */
         .countdown-timer {
             font-family: var(--font-heading);
-            font-size: 2.2rem;
-            color: var(--gold);
-            margin: 20px 0;
-        }
-        .timer-label {
-            font-family: var(--font-body);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #e0e0e0; 
-            margin-top: 5px;
+            font-size: clamp(1.8rem, 8vw, 2.5rem);
+            color: var(--rose-gold);
+            margin: 1rem 0;
+            font-weight: 300;
         }
 
-        /* Page 7: The Letter */
         .letter-container {
-            background: var(--paper-color);
-            padding: 2.5rem 2rem;
-            box-shadow: 0 10px 30px rgba(122, 46, 58, 0.05); 
+            background: var(--surface-velvet);
+            padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 2.5rem);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.5); 
             width: 100%;
-            max-height: 75vh;
+            max-height: 60vh;
             overflow-y: auto;
-            position: relative;
             text-align: left;
-            border-radius: 2px;
-            /* Subtle texture effect */
-            background-image: linear-gradient(var(--paper-color) 0%, var(--paper-color) 100%), url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmOWYwIi8+CjxwYXRoIGQ9M00xIDNoMnYxSDF6IiBmaWxsPSIjZjRmMGU2IiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+');
+            border: 1px solid rgba(230, 183, 168, 0.05);
+            margin: 0 auto;
         }
         
         .letter-content {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.25rem;
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
             line-height: 1.7;
-            color: var(--text-body);
-        }
-        
-        .letter-content p {
-            text-indent: 0;
-            margin-bottom: 1.2rem;
-            color: var(--text-body);
-            max-width: 100%;
+            color: var(--text-main);
         }
 
-        .signature-block {
-            margin-top: 3rem;
-            text-align: right;
-            padding-right: 1rem;
-        }
+        .signature-name { font-family: var(--font-signature); font-size: clamp(1.8rem, 6vw, 2.2rem); color: var(--rose-gold); }
 
-        .with-love {
-            font-family: 'Cormorant Garamond', serif;
-            font-style: italic;
-            font-size: 1.1rem;
-            color: var(--text-heading);
-            display: block;
-            margin-bottom: 0.2rem;
-        }
+        /* Unlock */
+        .switch { width: 50px; height: 28px; }
+        .slider:before { height: 20px; width: 20px; left: 3px; bottom: 3px; }
 
-        .signature-name {
-            font-family: var(--font-signature);
-            font-size: 2rem;
-            color: var(--text-heading);
-        }
+        .loading-bar { height: 1px; background: var(--rose-gold); width: 0%; margin: 20px auto; opacity: 0.5; }
 
-        /* Scrollbar for letter */
-        .letter-container::-webkit-scrollbar { width: 6px; }
-        .letter-container::-webkit-scrollbar-thumb { background-color: var(--btn-bg); border-radius: 3px; }
-
-        /* Page 11: Unlock */
-        .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--gold); }
-        input:checked + .slider:before { transform: translateX(22px); }
-
-        .loading-bar { width: 0%; height: 3px; background: var(--gold); margin: 25px auto; border-radius: 2px; display: none; }
-        .gift-reveal-text { display: none; margin-top: 25px; font-size: 1.4rem; font-weight: 600; color: var(--text-heading); line-height: 1.5; }
-
-        /* Page 12: Gemini AI */
         #ai-response {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.3rem;
+            font-size: clamp(1rem, 4vw, 1.25rem);
             min-height: 80px;
-            margin: 20px 0;
+            margin: 1.5rem 0;
             padding: 15px;
-            background: rgba(255,255,255,0.5);
-            border-radius: 8px;
-            color: var(--text-heading);
-            font-style: italic;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .mood-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 5px;
-            margin-bottom: 20px;
+            color: var(--text-main);
+            border-left: 1px solid var(--soft-copper);
         }
 
-        /* --- MOBILE OPTIMIZATION --- */
-        @media (max-width: 480px) {
-            h1 { font-size: 2.5rem; }
-            h2 { font-size: 1.8rem; }
-            p { font-size: 1rem; }
-            .container { padding: 1.5rem; }
-            
-            .grid-container { grid-template-columns: 1fr 1fr; gap: 8px; }
-            .grid-item { height: 70px; font-size: 0.75rem; }
-            
-            .letter-container { padding: 2rem 1.5rem; max-height: 65vh; }
-            .letter-content { font-size: 1.15rem; }
-            
-            .btn { padding: 12px 30px; font-size: 0.8rem; }
+        /* Laptop Specific adjustments */
+        @media (min-width: 1024px) {
+            .container { max-width: 800px; }
+            section { padding: 3rem; }
+            p { max-width: 75%; }
+        }
+
+        /* Landscape Mobile adjustment */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .container { padding: 0.5rem; }
+            h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+            p { margin-bottom: 1rem; }
+            .grid-container { grid-template-columns: repeat(5, 1fr); }
+            .grid-item { height: 60px; }
+            .letter-container { max-height: 40vh; }
         }
     </style>
 </head>
 <body>
 
-    <!-- AUDIO PLAYER -->
     <audio id="bg-music" loop>
         <source src="./song.mp3" type="audio/mp3">
     </audio>
 
-    <!-- Background Canvas for Particles -->
+    <div id="atmosphere-container">
+        <div class="film-grain"></div>
+        <div id="glow-bloom"></div>
+        <div id="cursor-glow"></div>
+        <div class="smoky-cloud" style="width: 40vw; height: 40vw; top: 10%; left: -10%;"></div>
+        <div class="smoky-cloud" style="width: 50vw; height: 50vw; bottom: -10%; right: -10%; background: var(--surface-rosewood);"></div>
+    </div>
+
     <canvas id="canvas-bg"></canvas>
 
     <div class="container">
@@ -355,7 +371,7 @@
         <!-- PAGE 1: HERO -->
         <section id="page-1" class="active">
             <h1 class="hero-title">Hii, babe<br><span class="highlight">Here is your Valentine gift...</span></h1>
-            <p style="font-size: 1.1rem; opacity: 0.9; margin-top: 10px;">
+            <p>
                 Not perfect<br>
                 Just something made with my hands,<br>
                 and my heart 💓 for you.
@@ -365,54 +381,48 @@
 
         <!-- PAGE 2: TEASE 1 -->
         <section id="page-2">
-            <h2 style="margin-bottom: 30px;">
-                You know what?
-            </h2>
-            <div style="font-size: 2rem; color: var(--gold); margin-top: 30px;">✨</div>
-            <button class="btn" style="margin-top: 40px;" onclick="nextSection(2)">Next</button>
+            <h2>You know what?</h2>
+            <div style="font-size: 1.5rem; color: var(--rose-gold); margin-top: 15px; opacity: 0.5;">✧</div>
+            <button class="btn" style="margin-top: 30px;" onclick="nextSection(2)">Next</button>
         </section>
 
         <!-- PAGE 3: TEASE 2 -->
         <section id="page-3">
-            <h2 style="margin-bottom: 30px; font-size: 1.8rem;">
+            <h2 style="max-width: 90%;">
                 Some people enter your life softly,<br>
                 and before you realize it,<br>
                 they become the place you feel safest.<br>
                 That’s you.
             </h2>
-            <button class="btn" style="margin-top: 40px;" onclick="nextSection(3)">Next</button>
+            <button class="btn" style="margin-top: 30px;" onclick="nextSection(3)">Next</button>
         </section>
 
         <!-- PAGE 4: UNIVERSE -->
         <section id="page-4">
-            <h2 style="margin-bottom: 30px;">
+            <h2>
                 My favorite word is “Universe.”<br>
                 Because it begins with U,<br>
                 and somehow ends with everything I feel.<br>
             </h2>
-            <button class="btn" style="margin-top: 40px;" onclick="nextSection(4)">Next</button>
+            <button class="btn" style="margin-top: 30px;" onclick="nextSection(4)">Next</button>
         </section>
 
         <!-- PAGE 5: 10 THINGS -->
         <section id="page-5">
-            <h3 style="margin-bottom: 25px; color: var(--text-heading);">10 Things I Love About You</h3>
-            <div class="grid-container" id="grid-things">
-                <!-- JS will inject items here -->
-            </div>
-            <button class="btn" id="btn-page-5" style="display:none; margin-top: 20px;" onclick="nextSection(5)">Continue the Journey</button>
+            <h3>10 Things I Love About You</h3>
+            <div class="grid-container" id="grid-things"></div>
+            <button class="btn" id="btn-page-5" style="display:none; margin-top: 10px;" onclick="nextSection(5)">Continue the Journey</button>
         </section>
 
         <!-- PAGE 6: COUNTDOWN -->
-        <section id="page-6" style="background: var(--text-heading); color: white;">
-            <h2 style="color: #fff; opacity: 0.9;">The Journey</h2>
-            <p style="color: #e0e0e0; max-width: 500px;">It was 6 June 2025, we first exchanged words....<br>And that small moment brought us all the way here.</p>
-            
+        <section id="page-6">
+            <h2>The Journey</h2>
+            <p>It was 6 June 2025, we first exchanged words....<br>And that small moment brought us all the way here.</p>
             <div class="countdown-timer">
                 <div id="timer-display">000 Days</div>
                 <div class="timer-label">Since we started talking</div>
             </div>
-            
-            <button class="btn" style="border-color: rgba(255,255,255,0.5); color: white; margin-top: 30px;" onclick="nextSection(6)">Next</button>
+            <button class="btn" style="margin-top: 15px;" onclick="nextSection(6)">Next</button>
         </section>
 
         <!-- PAGE 7: LETTER -->
@@ -420,23 +430,14 @@
             <div class="letter-container">
                 <div class="letter-content">
                     <p><strong>Happy Valentine’s Day, my wifey ❤️</strong></p>
-
                     <p>a.k.a. my fuddu larki,<br>and the person I love the most.</p>
-
                     <p>I don’t always know how to put feelings into perfect words, but one thing I know for sure, you are my home. And once you find home, you stop looking anywhere else.</p>
-
                     <p>You’re the person I can’t imagine a life without, the one my heart casually chose and now refuses to negotiate about.</p>
-
                     <p>All I want is you by my side – no grand demands, no extra wishes. Just us. Laughing, growing, annoying each other, and building a future that feels like ours.</p>
-
                     <p>I want to make you feel loved, on the loud days and the quiet ones, on the days you shine and the days you forget that you do.</p>
-
                     <p>I’ve said it before, and I’ll say it again – you are the most important person in my world, and my heart is very serious about you.</p>
-
                     <p>You are rare. You are valuable. Your presence matters more than you realize.</p>
-
                     <p>So stay exactly who you are, keep shining, keep smiling, because you’re a star… and stars don’t ask for permission to glow ✨💓</p>
-                    
                     <div class="signature-block">
                         <span class="with-love">Always yours,</span>
                         <span class="signature-name">Raj</span>
@@ -448,8 +449,8 @@
 
         <!-- PAGE 8: INPUT VERIFICATION -->
         <section id="page-8">
-            <h3 style="font-weight: 400; margin-bottom: 5px;">Type exactly:</h3>
-            <p class="highlight" style="font-size: 1rem; margin-bottom: 25px;">"I love you raj and I'll always do"</p>
+            <h3 style="font-weight: 300; margin-bottom: 5px;">Type exactly:</h3>
+            <p class="highlight" style="font-size: 0.9rem; margin-bottom: 20px; opacity: 0.8;">"I love you raj and I'll always do"</p>
             <input type="text" id="magic-input" placeholder="Type here..." autocomplete="off">
             <button class="btn" onclick="checkInput()">Submit</button>
         </section>
@@ -463,64 +464,58 @@
         <!-- PAGE 10: DRAMATIC REVEAL -->
         <section id="page-10">
             <h1>I'm your gift, my sannu</h1>
-            <h3 style="margin-top: -10px;">Come and unwrap me.</h3>
-            <br><br>
-            <p style="font-size: 1.2rem; color: var(--gold);">Naughty harkatein 😋</p>
+            <h3 style="margin-top: -5px;">Come and unwrap me.</h3>
+            <p style="color: var(--glow-affection); opacity: 0.8; margin-top: 10px;">Naughty harkatein 😋</p>
             <button class="btn" onclick="nextSection(10)">Next</button>
         </section>
 
         <!-- PAGE 11: UNLOCK ANIMATION -->
         <section id="page-11">
             <h2>Unlock Your Real Gift</h2>
-            <div style="margin: 30px 0;">
+            <div style="margin: 20px 0;">
                 <label class="switch">
                     <input type="checkbox" id="gift-toggle" onchange="unlockGift()">
                     <span class="slider"></span>
                 </label>
             </div>
             <div class="loading-bar" id="gift-loader"></div>
-            <div class="gift-reveal-text" id="gift-msg">
+            <div class="gift-reveal-text" id="gift-msg" style="display:none;">
                 Your gift is unlocked:<br>
-                <span style="color: var(--text-heading); display: block; margin-top: 15px; font-size: 1.4rem;">Fuddu ghar jaake khud dekh lena shammmm ko hehe</span>
-                <span style="font-size: 2rem; margin-top: 10px; display: block;">😂</span>
+                <span style="color: var(--rose-gold); display: block; margin-top: 10px; font-size: 1.1rem;">Fuddu ghar jaake khud dekh lena shammmm ko hehe</span>
+                <span style="font-size: 1.5rem; margin-top: 5px; display: block;">😂</span>
             </div>
-            <button class="btn" id="btn-final" style="display:none; margin-top:30px;" onclick="nextSection(11)">Next</button>
+            <button class="btn" id="btn-final" style="display:none; margin-top:20px;" onclick="nextSection(11)">Next</button>
         </section>
 
-        <!-- PAGE 12: GEMINI AI POEM -->
+        <!-- PAGE 12: CUPID'S MUSE -->
         <section id="page-12">
-            <h2 style="font-size: 2.5rem; margin-bottom: 10px;">Cupid's Muse ✨</h2>
-            <p>Still want more words? Let the stars write a poem just for us.</p>
-            
+            <h2>Cupid's Muse ✨</h2>
+            <p style="opacity: 0.7;">Still want more words? Pick a mood.</p>
             <div class="mood-buttons">
                 <button class="btn btn-mood" onclick="generateLoveNote('Romantic')">Romantic ❤️</button>
                 <button class="btn btn-mood" onclick="generateLoveNote('Funny')">Funny 😂</button>
                 <button class="btn btn-mood" onclick="generateLoveNote('Spicy')">Spicy 🌶️</button>
                 <button class="btn btn-mood" onclick="generateLoveNote('Sweet')">Sweet 🍬</button>
             </div>
-
             <div id="ai-response">Pick a mood above...</div>
-            
             <button class="btn" onclick="nextSection(12)">Finish</button>
         </section>
 
         <!-- PAGE 13: ENDING -->
         <section id="page-13">
-            <div style="padding: 2rem; background: #fff; box-shadow: 0 10px 40px rgba(122, 46, 58, 0.1); border-radius: 8px;">
-                <h2 style="color: var(--text-heading);">Have a beautiful day cutie</h2>
+            <div style="padding: 2.5rem 1.5rem; background: var(--surface-velvet); border: 1px solid rgba(230, 183, 168, 0.1); border-radius: 2px; width: 90%;">
+                <h2 style="color: var(--text-main);">Have a beautiful day cutie</h2>
                 <p>Wishing you every ounce of happiness 💋</p>
-                <p>Take care, hottie😋</p>
+                <p style="font-size: 0.85rem; opacity: 0.6; margin-bottom: 0;">Take care, hottie😋</p>
             </div>
         </section>
 
     </div>
 
     <script>
-        /* --- STATE MANAGEMENT --- */
         let currentSection = 1;
         const totalSections = 13;
 
-        /* --- 10 THINGS DATA --- */
         const things = [
             "I love your smile the kind that fixes my worst days without trying",
             "I love how effortlessly cute you are, even when you don’t notice it yourself",
@@ -535,70 +530,84 @@
         ];
         let unlockedThings = 0;
 
-        /* --- INITIALIZATION --- */
         document.addEventListener('DOMContentLoaded', () => {
+            initAtmosphere();
             initParticles();
             initThingsGrid();
             startCountdown();
+            initCursorGlow();
             
-            // Hero Animation
-            gsap.from(".hero-title", { duration: 1.5, y: 50, opacity: 0, ease: "power3.out" });
-            gsap.from(".hero-title span", { duration: 1.5, color: "#7A2E3A", delay: 0.5 });
-            gsap.from("#page-1 p", { duration: 1.5, opacity: 0, delay: 1 });
+            gsap.from(".hero-title", { duration: 2, y: 30, opacity: 0, ease: "power2.out" });
+            gsap.from("#page-1 p", { duration: 2, opacity: 0, delay: 0.6 });
         });
 
-        /* --- AUDIO & START --- */
+        function initAtmosphere() {
+            gsap.to("#atmosphere-container", {
+                duration: 4,
+                backgroundColor: "#1D0B0D",
+                ease: "sine.inOut",
+                repeat: -1,
+                yoyo: true
+            });
+
+            const bloom = document.getElementById('glow-bloom');
+            gsap.to(bloom, {
+                duration: 8,
+                opacity: 0.04,
+                scale: 1.2,
+                ease: "sine.inOut",
+                repeat: -1,
+                yoyo: true
+            });
+        }
+
+        function initCursorGlow() {
+            const glow = document.getElementById('cursor-glow');
+            window.addEventListener('mousemove', (e) => {
+                gsap.to(glow, {
+                    x: e.clientX,
+                    y: e.clientY,
+                    duration: 1.2,
+                    ease: "power2.out"
+                });
+            });
+        }
+
         function startExperience() {
             const audio = document.getElementById('bg-music');
-            audio.volume = 0.3;
-            audio.play().catch(error => {
-                console.log("Audio play failed, showing prompt if supported.");
-            });
+            audio.volume = 0.2;
+            audio.play().catch(() => {});
             nextSection(1);
         }
 
-        /* --- NAVIGATION --- */
         function nextSection(current) {
             const next = current + 1;
             const currentEl = document.getElementById(`page-${current}`);
             const nextEl = document.getElementById(`page-${next}`);
-
             if (!nextEl) return;
 
-            // GSAP Exit Animation
             gsap.to(currentEl, {
-                duration: 0.6,
+                duration: 1,
                 opacity: 0,
-                y: -30,
-                ease: "power2.in",
+                y: -20,
+                ease: "power2.inOut",
                 onComplete: () => {
                     currentEl.classList.remove('active');
                     nextEl.classList.add('active');
-                    
-                    // Reset position for entrance
-                    gsap.set(nextEl, { y: 30, opacity: 0 });
-                    
-                    // GSAP Entrance Animation
-                    gsap.to(nextEl, {
-                        duration: 0.8,
-                        opacity: 1,
-                        y: 0,
-                        ease: "power2.out"
-                    });
-
-                    // Special Page Triggers
-                    if(next === 7) animateLetter();
+                    gsap.fromTo(nextEl, 
+                        { y: 20, opacity: 0 }, 
+                        { y: 0, opacity: 1, duration: 1.2, ease: "power2.out" }
+                    );
                 }
             });
         }
 
-        /* --- PAGE 5: 10 THINGS LOGIC --- */
         function initThingsGrid() {
             const container = document.getElementById('grid-things');
-            things.forEach((thing, index) => {
+            things.forEach((thing) => {
                 const item = document.createElement('div');
                 item.className = 'grid-item locked';
-                item.innerHTML = `<span class="lock-icon">🔒</span><span class="hidden-content">${thing}</span>`;
+                item.innerHTML = `<span>🔒</span><span class="hidden-content">${thing}</span>`;
                 item.onclick = () => revealThing(item);
                 container.appendChild(item);
             });
@@ -606,230 +615,137 @@
 
         function revealThing(element) {
             if (!element.classList.contains('locked')) return;
-
             element.classList.remove('locked');
             element.classList.add('unlocked');
-            
-            const content = element.querySelector('.hidden-content');
-            const icon = element.querySelector('.lock-icon');
-            
-            icon.style.display = 'none';
-            content.style.display = 'block';
-
-            gsap.from(element, { scale: 0.9, duration: 0.3, ease: "back.out(1.7)" });
-
+            element.querySelector('span:first-child').style.display = 'none';
+            element.querySelector('.hidden-content').style.display = 'block';
             unlockedThings++;
             if (unlockedThings === things.length) {
-                gsap.to("#btn-page-5", { display: "inline-block", opacity: 1, duration: 0.5, delay: 0.5 });
+                gsap.to("#btn-page-5", { display: "inline-block", opacity: 1, duration: 1 });
             }
         }
 
-        /* --- PAGE 6: COUNTDOWN LOGIC --- */
         function startCountdown() {
-            // Set date to 6 June 2025
             const startDate = new Date('2025-06-06T00:00:00');
             const display = document.getElementById('timer-display');
-
             setInterval(() => {
                 const now = new Date();
                 const diff = now - startDate;
-
                 const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
                 display.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
             }, 1000);
         }
 
-        /* --- PAGE 7: LETTER ANIMATION --- */
-        function animateLetter() {
-            gsap.from(".letter-container", {
-                y: 50,
-                opacity: 0,
-                duration: 1.5,
-                ease: "power3.out",
-                delay: 0.2
-            });
-        }
-
-        /* --- PAGE 8: INPUT LOGIC --- */
         function checkInput() {
             const input = document.getElementById('magic-input');
             const val = input.value.trim().toLowerCase().replace(/\s+/g, ' '); 
-            // Normalized password string
             const correct = "i love you raj and i'll always do";
-            const correctNoApostrophe = "i love you raj and ill always do";
-
-            if (val === correct || val === correctNoApostrophe) {
+            const alternative = "i love you raj and ill always do";
+            if (val === correct || val === alternative) {
                 nextSection(8);
             } else {
-                gsap.to(input, { x: -10, duration: 0.1, yoyo: true, repeat: 5 });
-                input.style.borderBottomColor = "#d68c92"; 
-                setTimeout(() => input.style.borderBottomColor = "var(--gold)", 1000);
+                gsap.to(input, { x: -5, duration: 0.1, yoyo: true, repeat: 3 });
+                input.style.borderBottomColor = "#7A2E3A";
+                setTimeout(() => input.style.borderBottomColor = "var(--text-inactive)", 1000);
             }
         }
 
-        /* --- PAGE 11: GIFT UNLOCK LOGIC --- */
         function unlockGift() {
             const toggle = document.getElementById('gift-toggle');
             const loader = document.getElementById('gift-loader');
             const msg = document.getElementById('gift-msg');
             const btn = document.getElementById('btn-final');
-
             if (toggle.checked) {
                 toggle.disabled = true;
                 loader.style.display = 'block';
-
                 gsap.to(loader, {
-                    width: "60%",
-                    duration: 4,
-                    ease: "power1.inOut",
+                    width: "100%",
+                    duration: 5,
+                    ease: "sine.inOut",
                     onComplete: () => {
                         loader.style.display = 'none';
                         msg.style.display = 'block';
-                        gsap.from(msg, { scale: 0.8, opacity: 0, duration: 0.8, ease: "elastic.out(1, 0.5)" });
-                        confettiExplosion();
                         btn.style.display = "inline-block";
                     }
                 });
             }
         }
         
-        /* --- PAGE 12: GEMINI AI LOGIC --- */
-        async function generateLoveNote(mood) {
+        function generateLoveNote(mood) {
             const responseDiv = document.getElementById('ai-response');
-            responseDiv.innerHTML = "Asking Cupid... ✨";
-            
-            const apiKey = ""; // Added by runtime
-            const prompt = `Write a short, ${mood.toLowerCase()} 4-line poem for my girlfriend Saranya. Keep it cute, loving, and specific to a Valentine's context. Sign it 'Your Raj'.`;
-            
-            try {
-                // Retry logic helper
-                const fetchWithRetry = async (url, options, retries = 3, backoff = 1000) => {
-                    for (let i = 0; i < retries; i++) {
-                        try {
-                            const response = await fetch(url, options);
-                            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                            return response;
-                        } catch (error) {
-                            if (i === retries - 1) throw error;
-                            await new Promise(r => setTimeout(r, backoff * Math.pow(2, i)));
-                        }
-                    }
-                };
-
-                const response = await fetchWithRetry(
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            contents: [{
-                                parts: [{ text: prompt }]
-                            }]
-                        })
-                    }
-                );
-
-                const data = await response.json();
-                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "Cupid is taking a nap. Try again!";
-                
-                // Format the response for HTML (handle newlines)
-                responseDiv.innerHTML = text.replace(/\n/g, '<br>');
-                
-                // Animate the text in
-                gsap.from(responseDiv, { opacity: 0, y: 10, duration: 0.5 });
-                
-            } catch (error) {
-                console.error("Gemini API Error:", error);
-                responseDiv.innerHTML = "Cupid got lost in the clouds. Try again later! ❤️";
-            }
+            const messages = {
+                'Romantic': "In the quiet of the night, it’s you I hear,<br>My safe place, my home, my favorite fear.<br>No grand gestures, just your hand in mine,<br>A love that ages better than the finest wine. ❤️<br>- Your Raj",
+                'Funny': "You steal my hoodies and eat my fries,<br>But I still get lost in your pretty eyes.<br>You're a 'fuddu' sometimes, it's true,<br>But I'm the lucky idiot who fell for you. 😂<br>- Your Raj",
+                'Spicy': "Closer than close is where I want to be,<br>Just you, the night, and this chemistry.<br>A whisper, a touch, a shiver down the spine,<br>Tonight, I need you to be completely mine. 🌶️<br>- Your Raj",
+                'Sweet': "Like sugar in coffee, you make life sweet,<br>My heart skips a beat every time we meet.<br>You’re my sunshine on a cloudy day,<br>I love you more than words can say. 🍬<br>- Your Raj"
+            };
+            gsap.to(responseDiv, { opacity: 0, duration: 0.3, onComplete: () => {
+                responseDiv.innerHTML = messages[mood];
+                gsap.to(responseDiv, { opacity: 1, duration: 0.6 });
+            }});
         }
 
-        /* --- BACKGROUND PARTICLES --- */
         function initParticles() {
             const canvas = document.getElementById('canvas-bg');
             const ctx = canvas.getContext('2d');
-            
-            function resize() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            resize();
+            let w, h;
+            function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
             window.addEventListener('resize', resize);
+            resize();
 
-            const particles = [];
-            
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.size = Math.random() * 2;
-                    this.speedX = Math.random() * 0.5 - 0.25;
-                    this.speedY = Math.random() * 0.5 - 0.25;
-                    // Colors: Gold Dust, Blush Rose, Deep Wine
-                    const pColors = ['#D8B56A', '#F4C2C2', '#7A2E3A', '#FFFFFF'];
-                    this.color = pColors[Math.floor(Math.random() * pColors.length)]; 
-                    // Add transparency
-                    this.color = this.color + '66'; // 40% hex opacity approx
+            const dusts = [];
+            const petals = [];
+
+            class Dust {
+                constructor() { this.reset(); }
+                reset() {
+                    this.x = Math.random() * w; this.y = h + 10;
+                    this.s = Math.random() * 1.5; this.vx = (Math.random() - 0.5) * 0.2;
+                    this.vy = -Math.random() * 0.4 - 0.1; this.o = Math.random() * 0.4;
+                    this.c = Math.random() > 0.5 ? '#FFC1B6' : '#E6B7A8';
                 }
                 update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                    if (this.size > 0.2) this.size -= 0.01; 
-                    else this.size += 0.01; 
-                    
-                    if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
-                    if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+                    this.x += this.vx; this.y += this.vy;
+                    if (this.y < -10) this.reset();
                 }
                 draw() {
-                    ctx.fillStyle = this.color;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fill();
+                    ctx.fillStyle = this.c; ctx.globalAlpha = this.o;
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.s, 0, Math.PI * 2); ctx.fill();
                 }
             }
 
-            for (let i = 0; i < 40; i++) particles.push(new Particle());
-
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                particles.forEach(p => { p.update(); p.draw(); });
-                requestAnimationFrame(animate);
+            class Petal {
+                constructor() { this.reset(); }
+                reset() {
+                    this.x = Math.random() * w; this.y = -50;
+                    this.s = Math.random() * 8 + 8; this.r = Math.random() * 360;
+                    this.rv = (Math.random() - 0.5) * 0.5; this.vx = (Math.random() - 0.5) * 0.3;
+                    this.vy = Math.random() * 0.5 + 0.2; this.b = Math.random() * 8 + 8;
+                }
+                update() {
+                    this.x += this.vx; this.y += this.vy; this.r += this.rv;
+                    if (this.y > h + 50) this.reset();
+                }
+                draw() {
+                    ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.r * Math.PI / 180);
+                    ctx.fillStyle = '#4A1A21'; ctx.globalAlpha = 0.12; ctx.filter = `blur(${this.b}px)`;
+                    ctx.beginPath(); ctx.ellipse(0, 0, this.s, this.s/1.8, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+                }
             }
-            animate();
-        }
 
-        /* --- CONFETTI --- */
-        function confettiExplosion() {
-            // Updated confetti colors
-            const colors = ['#D8B56A', '#F4C2C2', '#7A2E3A', '#FFF'];
-            for(let i=0; i<80; i++) {
-                const el = document.createElement('div');
-                el.style.position = 'fixed';
-                el.style.left = '50%';
-                el.style.top = '50%';
-                el.style.width = '8px';
-                el.style.height = '8px';
-                el.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
-                el.style.zIndex = '999';
-                el.style.pointerEvents = 'none';
-                document.body.appendChild(el);
+            for(let i=0; i<40; i++) dusts.push(new Dust());
+            for(let i=0; i<10; i++) petals.push(new Petal());
 
-                gsap.to(el, {
-                    x: (Math.random() - 0.5) * 400,
-                    y: (Math.random() - 0.5) * 400,
-                    rotation: Math.random() * 360,
-                    opacity: 0,
-                    duration: 2.5,
-                    ease: "power2.out",
-                    onComplete: () => el.remove()
-                });
+            function loop() {
+                ctx.clearRect(0,0,w,h);
+                ctx.globalCompositeOperation = 'lighter'; dusts.forEach(d => { d.update(); d.draw(); });
+                ctx.globalCompositeOperation = 'source-over'; petals.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(loop);
             }
+            loop();
         }
     </script>
 </body>
